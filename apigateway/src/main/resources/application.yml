@@ -1,0 +1,80 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        # Account Service Routes (OAuth/Security)
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/api/auth/**, /api/accounts/**, /oauth2/**, /login/**
+          filters:
+            - StripPrefix=1
+
+        # OAuth2 Login Routes
+        - id: oauth2-login
+          uri: lb://account-service
+          predicates:
+            - Path=/oauth2/**
+
+        # JWT Authentication Routes
+        - id: auth-service
+          uri: lb://account-service
+          predicates:
+            - Path=/api/auth/**
+
+        # Item Service Routes
+        - id: item-service
+          uri: lb://item-service
+          predicates:
+            - Path=/api/items/**
+          filters:
+            - StripPrefix=1
+
+        # Order Service Routes
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=1
+
+        # Payment Service Routes
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - StripPrefix=1
+
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+# Eureka Configuration
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: api-gateway
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+
+# Management endpoints for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always

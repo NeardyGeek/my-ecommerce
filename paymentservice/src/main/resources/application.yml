@@ -1,0 +1,92 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: payment-service
+
+  # H2 In-Memory Database Configuration
+  datasource:
+    url: jdbc:h2:mem:ecommerce_payments;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # H2 Console Configuration (for development/testing)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  # JPA Configuration for H2
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # Recreates tables on each restart
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    defer-datasource-initialization: true
+
+  # SQL initialization
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql  # Optional: for initial data
+
+  # Kafka Configuration - Docker service
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: payment-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.yourcompany.paymentservice.dto"
+
+# Eureka Configuration - Docker service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: payment-service
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# Payment Gateway Configuration (example for Stripe/PayPal)
+payment:
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:sk_test_your_test_key}
+    public-key: ${STRIPE_PUBLIC_KEY:pk_test_your_test_key}
+
+# Kafka Topics
+kafka:
+  topics:
+    payment-events: payment-events
+    order-events: order-events
+
+# Logging
+logging:
+  level:
+    com.yourcompany.paymentservice: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.kafka: INFO

@@ -1,0 +1,43 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: item-service
+
+  # MongoDB Configuration - Docker service
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: ecommerce_items
+      # No authentication needed for Docker setup
+
+# Eureka Configuration - Docker service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: item-service
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# Logging
+logging:
+  level:
+    com.yourcompany.itemservice: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.data.mongodb: DEBUG

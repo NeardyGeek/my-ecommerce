@@ -1,0 +1,62 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: order-service
+
+  # Cassandra Configuration - Docker service
+  cassandra:
+    contact-points: cassandra
+    port: 9042
+    keyspace-name: ecommerce_orders
+    local-datacenter: datacenter1
+    schema-action: create_if_not_exists
+
+  # Kafka Configuration - Docker service
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: order-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.yourcompany.orderservice.dto"
+
+# Eureka Configuration - Docker service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    hostname: order-service
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# Kafka Topics
+kafka:
+  topics:
+    order-events: order-events
+    payment-events: payment-events
+
+# Logging
+logging:
+  level:
+    com.yourcompany.orderservice: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.kafka: INFO
