@@ -25,8 +25,8 @@
         <module>apigateway</module>
         <module>accountservice</module>
         <module>itemservice</module>
-        <module>orderservice</module>
-        <module>paymentservice</module>
+<!--        <module>orderservice</module>-->
+<!--        <module>paymentservice</module>-->
     </modules>
 
     <dependencyManagement>

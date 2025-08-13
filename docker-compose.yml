@@ -7,6 +7,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: account_db
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 
 
@@ -26,7 +31,7 @@ services:
       - "9092:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   zookeeper:
@@ -50,15 +55,21 @@ services:
     ports:
       - "9000:9000"
     depends_on:
-      - mysql
-      - eureka-server
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-      - JWT_SECRET=${JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET:-myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm}
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9000/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
 
   api-gateway:
     build: ./apigateway
@@ -75,17 +86,17 @@ services:
       - mongodb
       - eureka-server
 
-  order-service:
-    build: ./orderservice
-    ports:
-      - "8082:8082"
-    depends_on:
-      - cassandra
-      - eureka-server
+#  order-service:
+#    build: ./orderservice
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      - cassandra
+#      - eureka-server
 
-  payment-service:
-    build: ./paymentservice
-    ports:
-      - "8083:8083"
-    depends_on:
-      - eureka-server
+#  payment-service:
+#    build: ./paymentservice
+#    ports:
+#      - "8083:8083"
+#    depends_on:
+#      - eureka-server

@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: item-service
+  main:
+    allow-bean-definition-overriding: true
 
   # MongoDB Configuration - Docker service
   data:
@@ -12,6 +14,7 @@ spring:
       port: 27017
       database: ecommerce_items
       # No authentication needed for Docker setup
+
 
 # Eureka Configuration - Docker service
 eureka:
