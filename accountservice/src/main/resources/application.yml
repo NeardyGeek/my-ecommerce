@@ -6,6 +6,9 @@ spring:
     name: account-service
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 
   # MySQL Database Configuration - Docker service

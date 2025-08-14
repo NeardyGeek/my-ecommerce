@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,18 +24,18 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Value("${cors.allowed-origins}")
-    private List<String> allowedOrigins;
-
-    @Value("${cors.allowed-methods}")
-    private List<String> allowedMethods;
-
-    @Value("${cors.allowed-headers}")
-    private List<String> allowedHeaders;
-
-    @Value("${cors.allow-credentials}")
-    private boolean allowCredentials;
+//
+//    @Value("${cors.allowed-origins}")
+//    private List<String> allowedOrigins;
+//
+//    @Value("${cors.allowed-methods}")
+//    private List<String> allowedMethods;
+//
+//    @Value("${cors.allowed-headers}")
+//    private List<String> allowedHeaders;
+//
+//    @Value("${cors.allow-credentials}")
+//    private boolean allowCredentials;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,8 +45,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/**").permitAll()
@@ -58,17 +58,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(allowedMethods);
-        configuration.setAllowedHeaders(allowedHeaders);
-        configuration.setAllowCredentials(allowCredentials);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(allowedOrigins);
+//        configuration.setAllowedMethods(allowedMethods);
+//        configuration.setAllowedHeaders(allowedHeaders);
+//        configuration.setAllowCredentials(allowCredentials);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }
 

@@ -259,133 +259,6 @@
         <div class="response-area" id="authResponse"></div>
     </div>
 
-    <!-- Item Service Section -->
-    <div class="demo-section">
-        <h2>📦 Item Service (MongoDB)</h2>
-        <div class="grid">
-            <div>
-                <h3>Add New Item</h3>
-                <div class="form-group">
-                    <label>Item Name:</label>
-                    <input type="text" id="itemName" placeholder="Wireless Headphones">
-                </div>
-                <div class="form-group">
-                    <label>Price:</label>
-                    <input type="number" id="itemPrice" placeholder="99.99" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label>UPC:</label>
-                    <input type="text" id="itemUPC" placeholder="123456789012">
-                </div>
-                <div class="form-group">
-                    <label>Inventory:</label>
-                    <input type="number" id="itemInventory" placeholder="50">
-                </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <textarea id="itemDescription" placeholder="High-quality wireless headphones with noise cancellation"></textarea>
-                </div>
-                <button class="btn" onclick="addItem()">Add Item</button>
-            </div>
-
-            <div>
-                <h3>Browse Items</h3>
-                <button class="btn" onclick="getAllItems()">Load All Items</button>
-                <button class="btn" onclick="searchItems()">Search Items</button>
-
-                <div class="form-group" style="margin-top: 15px;">
-                    <label>Search Term:</label>
-                    <input type="text" id="searchTerm" placeholder="headphones">
-                </div>
-
-                <div id="itemsList" style="margin-top: 20px; max-height: 300px; overflow-y: auto;"></div>
-            </div>
-        </div>
-        <div class="response-area" id="itemResponse"></div>
-    </div>
-
-    <!-- Shopping Cart -->
-    <div class="demo-section">
-        <h2>🛒 Shopping Cart</h2>
-        <div id="cartItems"></div>
-        <div style="margin-top: 20px;">
-            <strong>Total: $<span id="cartTotal">0.00</span></strong>
-            <button class="btn" onclick="clearCart()" style="margin-left: 20px;">Clear Cart</button>
-            <button class="btn" onclick="checkout()" style="margin-left: 10px;">Checkout</button>
-        </div>
-    </div>
-
-    <!-- Order Service Section -->
-    <div class="demo-section">
-        <h2>📋 Order Service (Cassandra + Kafka)</h2>
-        <div class="grid">
-            <div>
-                <h3>Order Management</h3>
-                <button class="btn" onclick="getMyOrders()">Get My Orders</button>
-                <button class="btn" onclick="getAllOrders()">Get All Orders (Admin)</button>
-
-                <div class="form-group" style="margin-top: 15px;">
-                    <label>Order ID for Update/Cancel:</label>
-                    <input type="text" id="orderIdInput" placeholder="Enter order ID">
-                </div>
-                <button class="btn" onclick="cancelOrder()">Cancel Order</button>
-                <button class="btn" onclick="updateOrderStatus()">Update Status</button>
-            </div>
-
-            <div>
-                <h3>Order States</h3>
-                <p><strong>Order Flow:</strong></p>
-                <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li>CREATED → Order placed</li>
-                    <li>PAID → Payment processed</li>
-                    <li>SHIPPED → Order shipped</li>
-                    <li>DELIVERED → Order completed</li>
-                    <li>CANCELLED → Order cancelled</li>
-                </ul>
-            </div>
-        </div>
-        <div class="response-area" id="orderResponse"></div>
-    </div>
-
-    <!-- Payment Service Section -->
-    <div class="demo-section">
-        <h2>💳 Payment Service (PostgreSQL + Kafka)</h2>
-        <div class="grid">
-            <div>
-                <h3>Payment Processing</h3>
-                <div class="form-group">
-                    <label>Order ID:</label>
-                    <input type="text" id="paymentOrderId" placeholder="Enter order ID">
-                </div>
-                <div class="form-group">
-                    <label>Amount:</label>
-                    <input type="number" id="paymentAmount" placeholder="99.99" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label>Payment Method:</label>
-                    <select id="paymentMethod">
-                        <option value="CREDIT_CARD">Credit Card</option>
-                        <option value="DEBIT_CARD">Debit Card</option>
-                        <option value="PAYPAL">PayPal</option>
-                    </select>
-                </div>
-                <button class="btn" onclick="processPayment()">Process Payment</button>
-            </div>
-
-            <div>
-                <h3>Payment Management</h3>
-                <div class="form-group">
-                    <label>Payment ID:</label>
-                    <input type="text" id="paymentIdInput" placeholder="Enter payment ID">
-                </div>
-                <button class="btn" onclick="getPaymentStatus()">Check Status</button>
-                <button class="btn" onclick="refundPayment()">Refund Payment</button>
-                <button class="btn" onclick="getAllPayments()">Get All Payments</button>
-            </div>
-        </div>
-        <div class="response-area" id="paymentResponse"></div>
-    </div>
-
     <!-- System Health -->
     <div class="demo-section">
         <h2>⚙️ System Health & Monitoring</h2>
@@ -398,7 +271,6 @@
 <script>
     const API_BASE = 'http://localhost:8080'; // API Gateway
     let authToken = '';
-    let cart = [];
 
     // Utility functions
     function showResponse(elementId, data, isError = false) {
@@ -435,7 +307,8 @@
         };
 
         try {
-            const response = await makeRequest(`${API_BASE}/account-service/accounts`, 'POST', userData, false);
+            // Fixed: Use correct endpoint
+            const response = await makeRequest(`${API_BASE}/account-service/auth/register`, 'POST', userData, false);
             const data = await response.json();
             showResponse('authResponse', data, !response.ok);
         } catch (error) {
@@ -462,189 +335,6 @@
             }
         } catch (error) {
             showResponse('authResponse', { error: error.message }, true);
-        }
-    }
-
-    // Item functions
-    async function addItem() {
-        const itemData = {
-            name: document.getElementById('itemName').value,
-            price: parseFloat(document.getElementById('itemPrice').value),
-            upc: document.getElementById('itemUPC').value,
-            inventory: parseInt(document.getElementById('itemInventory').value),
-            description: document.getElementById('itemDescription').value,
-            pictureUrls: [`https://via.placeholder.com/300x200?text=${encodeURIComponent(document.getElementById('itemName').value)}`]
-        };
-
-        try {
-            const response = await makeRequest(`${API_BASE}/item-service/items`, 'POST', itemData);
-            const data = await response.json();
-            showResponse('itemResponse', data, !response.ok);
-            if (response.ok) getAllItems();
-        } catch (error) {
-            showResponse('itemResponse', { error: error.message }, true);
-        }
-    }
-
-    async function getAllItems() {
-        try {
-            const response = await makeRequest(`${API_BASE}/item-service/items`, 'GET', null, false);
-            const data = await response.json();
-            showResponse('itemResponse', data, !response.ok);
-            displayItems(data);
-        } catch (error) {
-            showResponse('itemResponse', { error: error.message }, true);
-        }
-    }
-
-    function displayItems(items) {
-        const itemsList = document.getElementById('itemsList');
-        if (Array.isArray(items)) {
-            itemsList.innerHTML = items.map(item => `
-                    <div class="cart-item">
-                        <strong>${item.name}</strong> - $${item.price}
-                        <br>UPC: ${item.upc} | Stock: ${item.inventory}
-                        <br><small>${item.description}</small>
-                        <br><button class="btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})" style="margin-top: 10px;">Add to Cart</button>
-                    </div>
-                `).join('');
-        }
-    }
-
-    // Cart functions
-    function addToCart(itemId, name, price) {
-        cart.push({ itemId, name, price, quantity: 1 });
-        updateCartDisplay();
-    }
-
-    function updateCartDisplay() {
-        const cartItems = document.getElementById('cartItems');
-        const cartTotal = document.getElementById('cartTotal');
-
-        if (cart.length === 0) {
-            cartItems.innerHTML = '<p>Cart is empty</p>';
-            cartTotal.textContent = '0.00';
-            return;
-        }
-
-        cartItems.innerHTML = cart.map((item, index) => `
-                <div class="cart-item">
-                    <strong>${item.name}</strong> - $${item.price} x ${item.quantity}
-                    <button class="btn" onclick="removeFromCart(${index})" style="margin-left: 10px; background: #dc3545;">Remove</button>
-                </div>
-            `).join('');
-
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        cartTotal.textContent = total.toFixed(2);
-    }
-
-    function removeFromCart(index) {
-        cart.splice(index, 1);
-        updateCartDisplay();
-    }
-
-    function clearCart() {
-        cart = [];
-        updateCartDisplay();
-    }
-
-    async function checkout() {
-        if (cart.length === 0) {
-            alert('Cart is empty!');
-            return;
-        }
-
-        if (!authToken) {
-            alert('Please login first!');
-            return;
-        }
-
-        const orderData = {
-            items: cart,
-            totalAmount: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-        };
-
-        try {
-            const response = await makeRequest(`${API_BASE}/order-service/orders`, 'POST', orderData);
-            const data = await response.json();
-            showResponse('orderResponse', data, !response.ok);
-
-            if (response.ok) {
-                clearCart();
-                alert('Order created successfully!');
-            }
-        } catch (error) {
-            showResponse('orderResponse', { error: error.message }, true);
-        }
-    }
-
-    // Order functions
-    async function getMyOrders() {
-        try {
-            const response = await makeRequest(`${API_BASE}/order-service/orders/my`);
-            const data = await response.json();
-            showResponse('orderResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('orderResponse', { error: error.message }, true);
-        }
-    }
-
-    async function getAllOrders() {
-        try {
-            const response = await makeRequest(`${API_BASE}/order-service/orders`);
-            const data = await response.json();
-            showResponse('orderResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('orderResponse', { error: error.message }, true);
-        }
-    }
-
-    async function cancelOrder() {
-        const orderId = document.getElementById('orderIdInput').value;
-        if (!orderId) {
-            alert('Please enter an order ID');
-            return;
-        }
-
-        try {
-            const response = await makeRequest(`${API_BASE}/order-service/orders/${orderId}/cancel`, 'PUT');
-            const data = await response.json();
-            showResponse('orderResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('orderResponse', { error: error.message }, true);
-        }
-    }
-
-    // Payment functions
-    async function processPayment() {
-        const paymentData = {
-            orderId: document.getElementById('paymentOrderId').value,
-            amount: parseFloat(document.getElementById('paymentAmount').value),
-            paymentMethod: document.getElementById('paymentMethod').value
-        };
-
-        try {
-            const response = await makeRequest(`${API_BASE}/payment-service/payments`, 'POST', paymentData);
-            const data = await response.json();
-            showResponse('paymentResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('paymentResponse', { error: error.message }, true);
-        }
-    }
-
-    async function getPaymentStatus() {
-        const paymentId = document.getElementById('paymentIdInput').value;
-        if (!paymentId) {
-            alert('Please enter a payment ID');
-            return;
-        }
-
-        try {
-            const response = await makeRequest(`${API_BASE}/payment-service/payments/${paymentId}`);
-            const data = await response.json();
-            showResponse('paymentResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('paymentResponse', { error: error.message }, true);
         }
     }
 
@@ -687,7 +377,8 @@
 
     async function getEurekaServices() {
         try {
-            const response = await fetch('http://eureka-server:8761/eureka/apps', {
+            // Fixed: Use localhost instead of eureka-server
+            const response = await fetch('http://localhost:8761/eureka/apps', {
                 headers: { 'Accept': 'application/json' }
             });
             const data = await response.json();
@@ -700,7 +391,6 @@
     // Initialize on page load
     window.onload = function() {
         checkAllServices();
-        updateCartDisplay();
     };
 </script>
 </body>

@@ -12,14 +12,19 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+//    @Value("${jwt.secret}")
+//    private String jwtSecret;
+//
+//    @Value("${jwt.expiration}")
+//    private long jwtExpiration;
+//
+//    @Value("${jwt.refresh-expiration}")
+//    private long refreshExpiration;
 
-    @Value("${jwt.expiration}")
-    private long jwtExpiration;
-
-    @Value("${jwt.refresh-expiration}")
-    private long refreshExpiration;
+    // Hardcode values for testing
+    private String jwtSecret = "myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm";
+    private long jwtExpiration = 86400000;
+    private long refreshExpiration = 604800000;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
