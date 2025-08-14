@@ -6,6 +6,9 @@ spring:
     name: item-service
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
   # MongoDB Configuration - Docker service
   data:
@@ -14,6 +17,22 @@ spring:
       port: 27017
       database: ecommerce_items
       # No authentication needed for Docker setup
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+
+
+
+jwt:
+  secret: ${JWT_SECRET:myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm}
 
 
 # Eureka Configuration - Docker service
