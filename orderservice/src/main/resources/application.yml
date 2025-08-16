@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: order-service
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
   # Cassandra Configuration - Docker service
   cassandra:
@@ -12,6 +17,14 @@ spring:
     keyspace-name: ecommerce_orders
     local-datacenter: datacenter1
     schema-action: create_if_not_exists
+    connection:
+      connect-timeout: 30s
+      init-query-timeout: 30s
+    request:
+      timeout: 30s
+      consistency: LOCAL_QUORUM
+      serial-consistency: LOCAL_SERIAL
+      page-size: 5000
 
   # Kafka Configuration - Docker service
   kafka:
@@ -24,7 +37,11 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "com.yourcompany.orderservice.dto"
+        spring.json.trusted.packages: "com.codebase.microservices.orderservice.dto"
+
+# JWT Configuration
+jwt:
+  secret: myVeryLongSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm
 
 # Eureka Configuration - Docker service
 eureka:
@@ -57,6 +74,6 @@ kafka:
 # Logging
 logging:
   level:
-    com.yourcompany.orderservice: DEBUG
+    com.codebase.microservices.orderservice: DEBUG
     org.springframework.web: DEBUG
     org.springframework.kafka: INFO

@@ -19,10 +19,10 @@
         </processorPath>
         <module name="accountservice" />
         <module name="itemservice" />
+        <module name="orderservice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="orderservice" target="17" />
       <module name="paymentservice" target="17" />
     </bytecodeTargetLevel>
   </component>
