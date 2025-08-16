@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce Microservices Demo</title>
+    <title>E-commerce Microservices Demo - Fixed</title>
     <style>
         * {
             margin: 0;
@@ -14,72 +14,46 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
             padding: 20px;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
         }
 
         .header h1 {
-            color: #333;
+            color: #2c3e50;
+            font-size: 2.5em;
             margin-bottom: 10px;
         }
 
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .service-status {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            min-width: 120px;
-            text-align: center;
-        }
-
-        .service-status.online {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .service-status.offline {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .demo-section {
+        .section {
             background: rgba(255, 255, 255, 0.95);
             margin: 20px 0;
             padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .demo-section h2 {
-            color: #333;
+        .section h2 {
+            color: #2c3e50;
             margin-bottom: 20px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 3px solid #3498db;
             padding-bottom: 10px;
+            font-size: 1.5em;
         }
 
         .form-group {
@@ -89,51 +63,60 @@
         .form-group label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
+            font-weight: 600;
+            color: #34495e;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid #ecf0f1;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             transition: border-color 0.3s ease;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #3498db;
         }
 
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
             margin: 5px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
         }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
         }
 
         .response-area {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background: #2c3e50;
+            color: #ecf0f1;
+            border: 1px solid #34495e;
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
@@ -141,45 +124,69 @@
             white-space: pre-wrap;
             max-height: 300px;
             overflow-y: auto;
+            font-size: 12px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
         }
 
-        .cart-item {
-            background: #f8f9fa;
+        .status-info {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
             padding: 15px;
             border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .item-card, .order-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
             border: 1px solid #dee2e6;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .item-card:hover, .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .cart-total {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .error {
-            color: #721c24;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+            color: #e74c3c !important;
+            background: #fadbd8 !important;
         }
 
         .success {
-            color: #155724;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+            color: #27ae60 !important;
+            background: #d5f4e6 !important;
         }
 
-        .auth-section {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        .config-section {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        .loading {
+        .endpoint-input {
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
@@ -193,65 +200,92 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h1>🛒 E-commerce Microservices Demo</h1>
-        <p>Comprehensive demonstration of Spring Boot microservices architecture</p>
-
-        <div class="status-bar">
-            <div class="service-status" id="eureka-status">Eureka: Checking...</div>
-            <div class="service-status" id="gateway-status">Gateway: Checking...</div>
-            <div class="service-status" id="account-status">Account: Checking...</div>
-            <div class="service-status" id="item-status">Items: Checking...</div>
-            <div class="service-status" id="order-status">Orders: Checking...</div>
-            <div class="service-status" id="payment-status">Payment: Checking...</div>
-        </div>
+        <p>Complete testing suite for microservices architecture</p>
     </div>
 
-    <!-- Authentication Section -->
-    <div class="demo-section auth-section">
-        <h2>🔐 Account & Authentication Service</h2>
+    <!-- Configuration Section -->
+    <div class="config-section">
+        <h3>🔧 Service Configuration</h3>
         <div class="grid">
             <div>
-                <h3>Create Account</h3>
+                <label>API Gateway URL:</label>
+                <input type="text" id="gatewayUrl" class="endpoint-input" value="http://localhost:8080">
+                <button class="btn" onclick="testConnection('gateway')">Test Gateway</button>
+            </div>
+            <div>
+                <label>Product Service URL:</label>
+                <input type="text" id="productUrl" class="endpoint-input" value="http://localhost:8081">
+                <button class="btn" onclick="testConnection('product')">Test Product</button>
+            </div>
+            <div>
+                <label>Order Service URL:</label>
+                <input type="text" id="orderUrl" class="endpoint-input" value="http://localhost:8082">
+                <button class="btn" onclick="testConnection('order')">Test Order</button>
+            </div>
+        </div>
+        <div id="connectionStatus" style="margin-top: 15px;"></div>
+    </div>
+
+    <!-- User Service -->
+    <div class="section">
+        <h2>👤 User Service</h2>
+        <div id="userStatus" class="status-info" style="display: none;"></div>
+
+        <div class="grid">
+            <div>
+                <h3>Register User</h3>
                 <div class="form-group">
                     <label>Email:</label>
-                    <input type="email" id="regEmail" placeholder="user@example.com">
+                    <input type="email" id="regEmail" value="test@example.com">
                 </div>
                 <div class="form-group">
                     <label>Username:</label>
-                    <input type="text" id="regUsername" placeholder="johndoe">
+                    <input type="text" id="regUsername" value="testuser">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
-                    <input type="password" id="regPassword" placeholder="password123">
+                    <input type="password" id="regPassword" value="password123">
                 </div>
                 <div class="form-group">
-                    <label>Shipping Address:</label>
-                    <textarea id="regAddress" placeholder="123 Main St, City, State 12345"></textarea>
+                    <label>First Name:</label>
+                    <input type="text" id="regFirstName" value="John">
                 </div>
-                <button class="btn" onclick="createAccount()">Create Account</button>
+                <div class="form-group">
+                    <label>Last Name:</label>
+                    <input type="text" id="regLastName" value="Doe">
+                </div>
+                <button class="btn" onclick="registerUser()">Register</button>
             </div>
 
             <div>
-                <h3>Login</h3>
+                <h3>Authentication</h3>
                 <div class="form-group">
-                    <label>Username:</label>
-                    <input type="text" id="loginUsername" placeholder="johndoe">
+                    <label>Username/Email:</label>
+                    <input type="text" id="loginUsername" value="testuser">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
-                    <input type="password" id="loginPassword" placeholder="password123">
+                    <input type="password" id="loginPassword" value="password123">
                 </div>
-                <button class="btn" onclick="login()">Login</button>
+                <button class="btn" onclick="loginUser()">Login</button>
+                <button class="btn btn-warning" onclick="logoutUser()">Logout</button>
+                <button class="btn btn-success" onclick="getProfile()">Get Profile</button>
 
-                <div style="margin-top: 20px;">
+                <div style="margin-top: 15px;">
                     <strong>Auth Token:</strong>
-                    <div id="authToken" style="word-break: break-all; margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px;">
-                        Not logged in
+                    <div id="tokenDisplay" style="font-size: 10px; word-break: break-all; background: #ecf0f1; padding: 10px; margin-top: 5px; border-radius: 4px;">
+                        Not authenticated
                     </div>
                 </div>
             </div>
@@ -259,139 +293,525 @@
         <div class="response-area" id="authResponse"></div>
     </div>
 
-    <!-- System Health -->
-    <div class="demo-section">
-        <h2>⚙️ System Health & Monitoring</h2>
-        <button class="btn" onclick="checkAllServices()">Check All Services</button>
-        <button class="btn" onclick="getEurekaServices()">View Eureka Registry</button>
-        <div class="response-area" id="healthResponse"></div>
+    <!-- Product Service -->
+    <div class="section">
+        <h2>📦 Product Service</h2>
+        <div class="grid">
+            <div>
+                <h3>Create Product</h3>
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="productName" value="Wireless Headphones">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="productDesc">Premium wireless headphones with noise cancellation</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category:</label>
+                    <select id="productCategory">
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="books">Books</option>
+                        <option value="home">Home & Garden</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Price ($):</label>
+                    <input type="number" id="productPrice" value="199.99" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Stock Quantity:</label>
+                    <input type="number" id="productStock" value="100">
+                </div>
+                <button class="btn" onclick="createProduct()">Create Product</button>
+            </div>
+
+            <div>
+                <h3>Browse Products</h3>
+                <button class="btn" onclick="getAllProducts()">Get All Products</button>
+                <button class="btn" onclick="getProductsByCategory()">Get by Category</button>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Search Products:</label>
+                    <input type="text" id="searchTerm" placeholder="Enter search term">
+                    <button class="btn" onclick="searchProducts()">Search</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Product ID for operations:</label>
+                    <input type="text" id="selectedProductId" placeholder="Enter product ID">
+                    <button class="btn" onclick="getProductDetails()">Get Details</button>
+                    <button class="btn btn-warning" onclick="updateProduct()">Update</button>
+                    <button class="btn btn-danger" onclick="deleteProduct()">Delete</button>
+                </div>
+
+                <div id="productsList" style="margin-top: 15px; max-height: 300px; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="response-area" id="productResponse"></div>
+    </div>
+
+    <!-- Shopping Cart -->
+    <div class="section">
+        <h2>🛒 Shopping Cart</h2>
+        <div id="cartItems"></div>
+        <div style="margin-top: 20px; text-align: center;">
+            <span class="cart-total">Total: $<span id="cartTotal">0.00</span></span>
+            <br><br>
+            <button class="btn btn-warning" onclick="clearCart()">Clear Cart</button>
+            <button class="btn btn-success" onclick="checkout()" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Order Service -->
+    <div class="section">
+        <h2>📋 Order Service</h2>
+        <div class="grid">
+            <div>
+                <h3>Order Management</h3>
+                <button class="btn" onclick="getMyOrders()">Get My Orders</button>
+                <button class="btn" onclick="getAllOrders()">Get All Orders (Admin)</button>
+                <button class="btn btn-success" onclick="checkOrderHealth()">Health Check</button>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Order ID:</label>
+                    <input type="text" id="orderIdInput" placeholder="Enter order ID">
+                    <button class="btn" onclick="getOrderDetails()">Get Details</button>
+                    <button class="btn btn-warning" onclick="updateOrderStatus()">Update Status</button>
+                    <button class="btn btn-danger" onclick="cancelOrder()">Cancel Order</button>
+                </div>
+
+                <div class="form-group">
+                    <label>New Order Status:</label>
+                    <select id="newOrderStatus">
+                        <option value="PENDING">Pending</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="PROCESSING">Processing</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <h3>Recent Orders</h3>
+                <div id="ordersList" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="response-area" id="orderResponse"></div>
+    </div>
+
+    <!-- Inventory Service -->
+    <div class="section">
+        <h2>📊 Inventory Service</h2>
+        <div class="grid">
+            <div>
+                <h3>Inventory Operations</h3>
+                <div class="form-group">
+                    <label>Product ID:</label>
+                    <input type="text" id="inventoryProductId" placeholder="Enter product ID">
+                </div>
+                <div class="form-group">
+                    <label>Quantity:</label>
+                    <input type="number" id="inventoryQuantity" value="10">
+                </div>
+                <button class="btn" onclick="checkInventory()">Check Stock</button>
+                <button class="btn btn-success" onclick="addInventory()">Add Stock</button>
+                <button class="btn btn-warning" onclick="reserveInventory()">Reserve</button>
+                <button class="btn btn-danger" onclick="releaseInventory()">Release</button>
+            </div>
+            <div>
+                <h3>Inventory Status</h3>
+                <button class="btn" onclick="getLowStockItems()">Low Stock Alert</button>
+                <button class="btn" onclick="getInventoryReport()">Full Report</button>
+                <div id="inventoryStatus" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+        <div class="response-area" id="inventoryResponse"></div>
+    </div>
+
+    <!-- Payment Service -->
+    <div class="section">
+        <h2>💳 Payment Service</h2>
+        <div class="grid">
+            <div>
+                <h3>Process Payment</h3>
+                <div class="form-group">
+                    <label>Order ID:</label>
+                    <input type="text" id="paymentOrderId" placeholder="Enter order ID">
+                </div>
+                <div class="form-group">
+                    <label>Amount ($):</label>
+                    <input type="number" id="paymentAmount" step="0.01" placeholder="Amount">
+                </div>
+                <div class="form-group">
+                    <label>Payment Method:</label>
+                    <select id="paymentMethod">
+                        <option value="CREDIT_CARD">Credit Card</option>
+                        <option value="DEBIT_CARD">Debit Card</option>
+                        <option value="PAYPAL">PayPal</option>
+                        <option value="BANK_TRANSFER">Bank Transfer</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="processPayment()">Process Payment</button>
+                <button class="btn btn-warning" onclick="refundPayment()">Process Refund</button>
+            </div>
+            <div>
+                <h3>Payment History</h3>
+                <button class="btn" onclick="getPaymentHistory()">Get History</button>
+                <div class="form-group">
+                    <label>Payment ID:</label>
+                    <input type="text" id="paymentId" placeholder="Enter payment ID">
+                    <button class="btn" onclick="getPaymentDetails()">Get Details</button>
+                </div>
+            </div>
+        </div>
+        <div class="response-area" id="paymentResponse"></div>
+    </div>
+
+    <!-- Test Suite -->
+    <div class="section">
+        <h2>🧪 Automated Tests</h2>
+        <button class="btn btn-success" onclick="runFullTest()">Run Full Test Suite</button>
+        <button class="btn btn-warning" onclick="runQuickTest()">Quick Test</button>
+        <button class="btn" onclick="testAllEndpoints()">Test All Endpoints</button>
+        <button class="btn btn-danger" onclick="clearAllResponses()">Clear All Responses</button>
+
+        <div id="testProgress" style="margin: 15px 0;"></div>
+        <div class="response-area" id="testResponse"></div>
     </div>
 </div>
 
 <script>
-    const API_BASE = 'http://localhost:8080'; // API Gateway
+    // Global state
     let authToken = '';
+    let currentUser = null;
+    let cart = [];
+    let allProducts = [];
+
+    // API Configuration
+    const getApiEndpoints = () => ({
+        GATEWAY: document.getElementById('gatewayUrl').value,
+        PRODUCT: document.getElementById('productUrl').value,
+        ORDER: document.getElementById('orderUrl').value,
+        USER: document.getElementById('gatewayUrl').value + '/api/users',
+        INVENTORY: document.getElementById('gatewayUrl').value + '/api/inventory',
+        PAYMENT: document.getElementById('gatewayUrl').value + '/api/payments'
+    });
 
     // Utility functions
-    function showResponse(elementId, data, isError = false) {
+    function log(elementId, data, isError = false) {
         const element = document.getElementById(elementId);
-        element.textContent = JSON.stringify(data, null, 2);
-        element.style.background = isError ? '#f8d7da' : '#f8f9fa';
-        element.style.color = isError ? '#721c24' : '#333';
+        if (!element) return;
+
+        element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        element.className = 'response-area ' + (isError ? 'error' : 'success');
     }
 
-    function makeRequest(url, method = 'GET', body = null, useAuth = true) {
-        const headers = {
-            'Content-Type': 'application/json',
+    function showLoading(elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.innerHTML = '<div class="spinner"></div> Loading...';
+        }
+    }
+
+    async function apiCall(url, method = 'GET', data = null, useAuth = true) {
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         };
 
         if (useAuth && authToken) {
-            headers['Authorization'] = `Bearer ${authToken}`;
+            options.headers['Authorization'] = `Bearer ${authToken}`;
         }
 
-        return fetch(url, {
-            method,
-            headers,
-            body: body ? JSON.stringify(body) : null
-        });
+        if (data) {
+            options.body = JSON.stringify(data);
+        }
+
+        console.log(`API Call: ${method} ${url}`, data);
+
+        try {
+            const response = await fetch(url, options);
+            const responseData = await response.text();
+
+            let result;
+            try {
+                result = responseData ? JSON.parse(responseData) : {};
+            } catch (e) {
+                result = { message: responseData || 'Empty response' };
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${result.message || result.error || 'Unknown error'}`);
+            }
+
+            return { success: true, data: result, status: response.status };
+        } catch (error) {
+            console.error('API Error:', error);
+            return { success: false, error: error.message, status: 0 };
+        }
     }
 
-    // Authentication functions
-    async function createAccount() {
+    // Connection Testing
+    async function testConnection(service) {
+        const endpoints = getApiEndpoints();
+        let url;
+
+        switch(service) {
+            case 'gateway':
+                url = endpoints.GATEWAY + '/actuator/health';
+                break;
+            case 'product':
+                url = endpoints.PRODUCT + '/api/products/health';
+                break;
+            case 'order':
+                url = endpoints.ORDER + '/api/orders/health';
+                break;
+        }
+
+        const result = await apiCall(url, 'GET', null, false);
+        document.getElementById('connectionStatus').innerHTML +=
+            `<div>${service.toUpperCase()}: ${result.success ? '✅ Connected' : '❌ Failed - ' + result.error}</div>`;
+    }
+
+    // User Service Functions
+    async function registerUser() {
+        showLoading('authResponse');
+
         const userData = {
             email: document.getElementById('regEmail').value,
             username: document.getElementById('regUsername').value,
             password: document.getElementById('regPassword').value,
-            shippingAddress: document.getElementById('regAddress').value,
-            billingAddress: document.getElementById('regAddress').value
+            firstName: document.getElementById('regFirstName').value,
+            lastName: document.getElementById('regLastName').value
         };
 
-        try {
-            // Fixed: Use correct endpoint
-            const response = await makeRequest(`${API_BASE}/account-service/auth/register`, 'POST', userData, false);
-            const data = await response.json();
-            showResponse('authResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('authResponse', { error: error.message }, true);
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.USER}/register`, 'POST', userData, false);
+
+        if (result.success) {
+            log('authResponse', 'User registered successfully! You can now login.');
+        } else {
+            log('authResponse', `Registration failed: ${result.error}`, true);
         }
     }
 
-    async function login() {
+    async function loginUser() {
+        showLoading('authResponse');
+
         const credentials = {
             username: document.getElementById('loginUsername').value,
             password: document.getElementById('loginPassword').value
         };
 
-        try {
-            const response = await makeRequest(`${API_BASE}/account-service/auth/login`, 'POST', credentials, false);
-            const data = await response.json();
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.USER}/login`, 'POST', credentials, false);
 
-            if (response.ok && data.token) {
-                authToken = data.token;
-                document.getElementById('authToken').textContent = authToken;
-                showResponse('authResponse', { message: 'Login successful', user: data.user });
-            } else {
-                showResponse('authResponse', data, true);
-            }
-        } catch (error) {
-            showResponse('authResponse', { error: error.message }, true);
+        if (result.success && result.data.token) {
+            authToken = result.data.token;
+            currentUser = result.data.user || { username: credentials.username };
+            document.getElementById('tokenDisplay').textContent = authToken;
+            updateUserStatus();
+            log('authResponse', 'Login successful!');
+        } else {
+            log('authResponse', `Login failed: ${result.error}`, true);
         }
     }
 
-    // Health check functions
-    async function checkService(serviceName, url) {
-        try {
-            const response = await fetch(url, { method: 'GET' });
-            const statusElement = document.getElementById(`${serviceName}-status`);
+    async function logoutUser() {
+        authToken = '';
+        currentUser = null;
+        document.getElementById('tokenDisplay').textContent = 'Not authenticated';
+        document.getElementById('userStatus').style.display = 'none';
+        clearCart();
+        log('authResponse', 'Logged out successfully');
+    }
 
-            if (response.ok) {
-                statusElement.textContent = `${serviceName}: Online`;
-                statusElement.className = 'service-status online';
-            } else {
-                statusElement.textContent = `${serviceName}: Error`;
-                statusElement.className = 'service-status offline';
-            }
-        } catch (error) {
-            const statusElement = document.getElementById(`${serviceName}-status`);
-            statusElement.textContent = `${serviceName}: Offline`;
-            statusElement.className = 'service-status offline';
+    async function getProfile() {
+        if (!authToken) {
+            log('authResponse', 'Please login first', true);
+            return;
+        }
+
+        showLoading('authResponse');
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.USER}/profile`);
+
+        if (result.success) {
+            currentUser = result.data;
+            updateUserStatus();
+            log('authResponse', result.data);
+        } else {
+            log('authResponse', `Failed to get profile: ${result.error}`, true);
         }
     }
 
-    async function checkAllServices() {
-        const services = [
-            { name: 'eureka', url: 'http://localhost:8761/actuator/health' },
-            { name: 'gateway', url: 'http://localhost:8080/actuator/health' },
-            { name: 'account', url: 'http://localhost:9000/actuator/health' },
-            { name: 'item', url: 'http://localhost:8081/actuator/health' },
-            { name: 'order', url: 'http://localhost:8082/actuator/health' },
-            { name: 'payment', url: 'http://localhost:8083/actuator/health' }
-        ];
-
-        services.forEach(service => {
-            checkService(service.name, service.url);
-        });
-
-        showResponse('healthResponse', { message: 'Health check completed - see status bar above' });
+    function updateUserStatus() {
+        if (currentUser) {
+            const statusDiv = document.getElementById('userStatus');
+            statusDiv.innerHTML = `✅ Logged in as: <strong>${currentUser.username}</strong> (${currentUser.email || 'N/A'})`;
+            statusDiv.style.display = 'block';
+        }
     }
 
-    async function getEurekaServices() {
-        try {
-            // Fixed: Use localhost instead of eureka-server
-            const response = await fetch('http://localhost:8761/eureka/apps', {
-                headers: { 'Accept': 'application/json' }
+    // Product Service Functions
+    async function createProduct() {
+        showLoading('productResponse');
+
+        const productData = {
+            name: document.getElementById('productName').value,
+            description: document.getElementById('productDesc').value,
+            category: document.getElementById('productCategory').value,
+            price: parseFloat(document.getElementById('productPrice').value),
+            stockQuantity: parseInt(document.getElementById('productStock').value),
+            sku: `SKU-${Date.now()}`,
+            status: 'ACTIVE'
+        };
+
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.PRODUCT}/api/products`, 'POST', productData);
+
+        if (result.success) {
+            log('productResponse', 'Product created successfully!');
+            getAllProducts();
+        } else {
+            log('productResponse', `Failed to create product: ${result.error}`, true);
+        }
+    }
+
+    async function getAllProducts() {
+        showLoading('productResponse');
+
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.PRODUCT}/api/products`, 'GET', null, false);
+
+        if (result.success) {
+            allProducts = result.data;
+            displayProducts(result.data);
+            log('productResponse', `Found ${result.data.length} products`);
+        } else {
+            log('productResponse', `Failed to get products: ${result.error}`, true);
+        }
+    }
+
+    async function searchProducts() {
+        const term = document.getElementById('searchTerm').value;
+        if (!term) {
+            log('productResponse', 'Please enter search term', true);
+            return;
+        }
+
+        showLoading('productResponse');
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.PRODUCT}/api/products/search?q=${encodeURIComponent(term)}`, 'GET', null, false);
+
+        if (result.success) {
+            displayProducts(result.data);
+            log('productResponse', `Search found ${result.data.length} products`);
+        } else {
+            log('productResponse', `Search failed: ${result.error}`, true);
+        }
+    }
+
+    async function getProductDetails() {
+        const productId = document.getElementById('selectedProductId').value;
+        if (!productId) {
+            log('productResponse', 'Please enter product ID', true);
+            return;
+        }
+
+        showLoading('productResponse');
+        const api = getApiEndpoints();
+        const result = await apiCall(`${api.PRODUCT}/api/products/${productId}`, 'GET', null, false);
+
+        if (result.success) {
+            log('productResponse', result.data);
+        } else {
+            log('productResponse', `Failed to get product: ${result.error}`, true);
+        }
+    }
+
+    function displayProducts(products) {
+        const productsList = document.getElementById('productsList');
+        if (!Array.isArray(products) || products.length === 0) {
+            productsList.innerHTML = '<p>No products found</p>';
+            return;
+        }
+
+        productsList.innerHTML = products.map(product => `
+            <div class="item-card">
+                <strong>${product.name}</strong> - $${product.price}
+                <br><small>ID: ${product.id} | Category: ${product.category}</small>
+                <br><small>Stock: ${product.stockQuantity || 'N/A'}</small>
+                <br><small>${product.description}</small>
+                <br>
+                <button class="btn" onclick="addToCart('${product.id}', '${product.name}', ${product.price})">Add to Cart</button>
+                <button class="btn" onclick="selectProduct('${product.id}')">Select</button>
+            </div>
+        `).join('');
+    }
+
+    function selectProduct(productId) {
+        document.getElementById('selectedProductId').value = productId;
+        document.getElementById('inventoryProductId').value = productId;
+        log('productResponse', `Selected product: ${productId}`);
+    }
+
+    // Cart Functions
+    function addToCart(productId, name, price) {
+        const existing = cart.find(item => item.productId === productId);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({
+                productId: productId,
+                name: name,
+                price: price,
+                quantity: 1
             });
-            const data = await response.json();
-            showResponse('healthResponse', data, !response.ok);
-        } catch (error) {
-            showResponse('healthResponse', { error: error.message }, true);
         }
+        updateCartDisplay();
+        log('productResponse', `Added ${name} to cart`);
     }
 
-    // Initialize on page load
-    window.onload = function() {
-        checkAllServices();
-    };
+    function updateCartDisplay() {
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p>🛒 Cart is empty</p>';
+            cartTotal.textContent = '0.00';
+            return;
+        }
+
+        cartItems.innerHTML = cart.map((item, index) => `
+            <div class="item-card">
+                <strong>${item.name}</strong> - ${item.price} x ${item.quantity}
+                <br><small>Subtotal: ${(item.price * item.quantity).toFixed(2)}</small>
+                <br>
+                <button class="btn btn-warning" onclick="updateQuantity(${index}, -1)">-</button>
+                <button class="btn btn-success" onclick="updateQuantity(${index}, 1)">+</button>
+                <button class="btn btn-danger" onclick="removeFromCart(${index})">Remove</button>
+            </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotal.textContent = total.toFixed(2);
+    }
+
+    function updateQuantity(index, change) {
+        cart[index].quantity += change;
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+        }
+        updateCartDisplay();
+    }
+
+
 </script>
-</body>
-</html>
