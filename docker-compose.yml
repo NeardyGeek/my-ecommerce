@@ -4,6 +4,8 @@ services:
     image: mysql:8.0
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: account_db
@@ -19,11 +21,28 @@ services:
     image: mongo:5.0
     ports:
       - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
 
   cassandra:
-    image: cassandra:3.11
+    image: cassandra:4.0  # Updated to 4.0 for better compatibility
     ports:
       - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=Test Cluster
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    volumes:
+      - ./init-cassandra.cql:/docker-entrypoint-initdb.d/init.cql
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s  # Cassandra takes time to start
+
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -101,13 +120,15 @@ services:
         condition: service_started
 
 
-#  order-service:
-#    build: ./orderservice
-#    ports:
-#      - "8082:8082"
-#    depends_on:
-#      - cassandra
-#      - eureka-server
+  order-service:
+    build: ./orderservice
+    ports:
+      - "8082:8082"
+    depends_on:
+      cassandra:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
 
 #  payment-service:
 #    build: ./paymentservice
@@ -115,3 +136,12 @@ services:
 #      - "8083:8083"
 #    depends_on:
 #      - eureka-server
+
+volumes:
+  mysql_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  cassandra_data:
+    driver: local
+
